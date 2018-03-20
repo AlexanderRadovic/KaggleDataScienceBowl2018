@@ -3,7 +3,6 @@
 #-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
 import os
 import sys
-sys.path.append('/home/alexander/competitionCode/unet-tensorflow-keras')
 import random
 import warnings
 
@@ -50,8 +49,8 @@ def prob_to_rles(x, cutoff=0.5):
                 yield rle_encoding(lab_img == i)
 
 # Set some parameters
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
+IMG_WIDTH = 256
+IMG_HEIGHT = 256
 IMG_CHANNELS = 3
 TRAIN_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_train/'
 TEST_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_test/'

@@ -3,7 +3,6 @@
 #-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
 import os
 import sys
-sys.path.append('/home/alexander/competitionCode/unet-tensorflow-keras')
 import random
 import warnings
 
