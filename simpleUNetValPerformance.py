@@ -70,7 +70,7 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         # if np.mean(img[:,:,0])==np.mean(img[:,:,1]) and np.mean(img[:,:,0])==np.mean(img[:,:,2]):
         #        img_fakeGrey=img[:,:,0]/255.
                                 
-        img = resize(img_fakeGrey.reshape((img_fakeGrey.shape[0],img_fakeGrey.shape[1],1)), (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
+        #img = resize(img_fakeGrey.reshape((img_fakeGrey.shape[0],img_fakeGrey.shape[1],1)), (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
         
         img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
         X_train[n] = img
@@ -84,14 +84,34 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 
 print('Done!')
 
-model = UNet().create_model(img_shape=X_train[0].shape, num_class=1)
-model.compile(optimizer='adam', loss='binary_crossentropy')
-model.summary()
+# Predict on train, val and test
+model = load_model('model-dsbowl2018-1-c3.h5')
+#preds_train = model.predict(X_train[:int(X_train.shape[0]*0.9)], verbose=1)
+preds_val = model.predict(X_train[int(X_train.shape[0]*0.9):], verbose=1)
+#preds_test = model.predict(X_test, verbose=1)
 
-# Fit model
-earlystopper = EarlyStopping(patience=5, verbose=1)
-checkpointer = ModelCheckpoint('model-dsbowl2018-1.h5', verbose=1, save_best_only=True)
-results = model.fit(X_train, Y_train,
-                        validation_split=0.1, batch_size=16, epochs=50,
-                        callbacks=[earlystopper, checkpointer])
+# Threshold predictions
+#preds_train_t = (preds_train > 0.5).astype(np.uint8)
+preds_val_t = (preds_val > 0.5).astype(np.uint8)
+#preds_test_t = (preds_test > 0.5).astype(np.uint8)
 
+# Create list of upsampled test masks
+#preds_test_upsampled = []
+#for i in range(len(preds_test)):
+ #           preds_test_upsampled.append(resize(np.squeeze(preds_test[i]),
+
+X_val=X_train[int(X_train.shape[0]*0.9):]
+Y_val=Y_train[int(Y_train.shape[0]*0.9):]
+
+for ix in range(0, len(X_val)):
+        plt.subplot(141)
+        imshow(X_val[ix])
+        plt.subplot(142)
+        imshow(np.squeeze(preds_val[ix]))
+        plt.subplot(143)
+        imshow(np.squeeze(preds_val_t[ix]))
+        plt.subplot(144)
+        imshow(np.squeeze(Y_val[ix]))
+
+        #plt.show()
+        plt.savefig('plots/validationPerf/example_'+str(ix)+'.png',dpi = 100)
