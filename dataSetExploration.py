@@ -18,18 +18,6 @@ from skimage.transform import resize
 from skimage.morphology import label
 from skimage.color import rgb2gray
 
-from keras.models import Model, load_model
-from keras.layers import Input
-from keras.layers.core import Dropout, Lambda
-from keras.layers.convolutional import Conv2D, Conv2DTranspose
-from keras.layers.pooling import MaxPooling2D
-from keras.layers.merge import concatenate
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras import backend as K
-
-import tensorflow as tf
-
-
 def plotPix(inputArray, name):
         fig, ax = plt.subplots(figsize=(6,6))
         ax.set_title('')
