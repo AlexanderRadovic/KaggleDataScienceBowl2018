@@ -33,8 +33,8 @@ import tensorflow as tf
 from model import UNet
 
 # Set some parameters
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
+IMG_WIDTH = 256
+IMG_HEIGHT = 256
 IMG_CHANNELS = 3
 TRAIN_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_train/'
 TEST_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_test/'
@@ -70,7 +70,7 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         # if np.mean(img[:,:,0])==np.mean(img[:,:,1]) and np.mean(img[:,:,0])==np.mean(img[:,:,2]):
         #        img_fakeGrey=img[:,:,0]/255.
                                 
-        img = resize(img_fakeGrey.reshape((img_fakeGrey.shape[0],img_fakeGrey.shape[1],1)), (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
+        #img = resize(img_fakeGrey.reshape((img_fakeGrey.shape[0],img_fakeGrey.shape[1],1)), (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
         
         img = resize(img, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
         X_train[n] = img
