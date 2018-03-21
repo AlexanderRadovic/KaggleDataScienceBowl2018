@@ -20,7 +20,7 @@ from itertools import chain
 from skimage.io import imread, imshow, imread_collection, concatenate_images
 from skimage.transform import resize, rotate
 from skimage.morphology import label
-from skimage.color import rgb2gray
+from skimage.color import rgb2hsv, hsv2rgb
 
 def plotPix(inputArray, name):
         fig, ax = plt.subplots(figsize=(6,6))
@@ -90,13 +90,21 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 			cloneImg=rotate(cloneImg, rotAngle)
 			cloneMask=rotate(cloneMask, rotAngle)
 
+		#randomly shift color palette
+		if random() > 0.5:
+			cloneImg=rgb2hsv(cloneImg)
+			
+		#randomly shift color palette
+		if random() > 0.5:
+			cloneImg=hsv2rgb(cloneImg)
+
 		X_train.append(cloneImg)
 		Y_train.append(cloneMask)
 	
 	i=i+1
 
- np.save('inputImages.npy',)
- np.save('inputMask.npy',)
+ np.save('inputImages.npy',np.stack(X_train))
+ np.save('inputMask.npy',np.stack(Y_train))
 
 
 
