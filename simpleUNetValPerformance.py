@@ -35,8 +35,8 @@ from model import UNet
 IMG_WIDTH = 128
 IMG_HEIGHT = 128
 IMG_CHANNELS = 3
-TRAIN_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_train/'
-TEST_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_test/'
+TRAIN_PATH = 'stage1_train/'
+TEST_PATH = 'stage1_test/'
 
 warnings.filterwarnings('ignore', category=UserWarning, module='skimage')
 seed = 42

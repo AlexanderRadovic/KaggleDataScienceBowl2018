@@ -52,8 +52,8 @@ def prob_to_rles(x, cutoff=0.5):
 IMG_WIDTH = 256
 IMG_HEIGHT = 256
 IMG_CHANNELS = 3
-TRAIN_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_train/'
-TEST_PATH = '/home/alexander/kaggleData/2018dsbowl/stage1_test/'
+TRAIN_PATH = 'stage1_train/'
+TEST_PATH = 'stage1_test/'
 
 warnings.filterwarnings('ignore', category=UserWarning, module='skimage')
 seed = 42
