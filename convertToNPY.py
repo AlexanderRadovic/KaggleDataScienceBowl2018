@@ -48,6 +48,7 @@ sys.stdout.flush()
 i=0
 
 for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
+        
         #acquire original image and resize so all images match
         path = TRAIN_PATH + id_
         img = imread(path + '/images/' + id_ + '.png')[:,:,:IMG_CHANNELS]                                
@@ -59,10 +60,12 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
             mask_ = imread(path + '/masks/' + mask_file)
             mask_ = np.expand_dims(resize(mask_, (IMG_HEIGHT, IMG_WIDTH), mode='constant',preserve_range=True), axis=-1)
             mask = np.maximum(mask, mask_)
-	
+
+        img=img.astype(np.uint8)
+        mask=mask.astype(np.bool)
 	X_train.append(img)
 	Y_train.append(mask)
-	        
+	
 	i=i+1
 
 np.save('inputImages.npy',np.stack(X_train))

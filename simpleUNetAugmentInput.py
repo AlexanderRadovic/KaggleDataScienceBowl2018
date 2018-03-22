@@ -69,9 +69,6 @@ mask_generator_val = mask_datagen_val.flow(Y_train[int(X_train.shape[0]*0.9):])
 train_generator = combineGenerator(image_generator, mask_generator)
 validation_generator = combineGenerator(image_generator_val, mask_generator_val)
 
-
-
-print 'test'
 # Compile the model
 model = UNet().create_model(img_shape=X_train[0].shape, num_class=1)
 model.compile(optimizer='adam', loss='binary_crossentropy')
