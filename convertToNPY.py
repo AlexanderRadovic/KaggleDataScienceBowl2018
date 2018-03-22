@@ -1,4 +1,9 @@
 #Convert the input datasets to a numpy array to make access easier later
+#Additionally it can iterate through the original dataset carrying out random operations including:
+#-flipping
+#-rotation
+#-color transformations
+
 import os
 import sys
 import random
@@ -15,21 +20,13 @@ from skimage.io import imread, imshow, imread_collection, concatenate_images
 from skimage.transform import resize
 from skimage.morphology import label
 
-def plotPix(inputArray, name):
-        fig, ax = plt.subplots(figsize=(6,6))
-        ax.set_title('')
-        ax.set_ylabel('nPixels')
-        ax.set_xlabel('Pixel Saturation')
-        plt.bar(range(len(inputArray)),inputArray, 1, color="blue",alpha=0.9)
-        ax.legend(loc='right',frameon=False)
-        plt.savefig('plots/pixelComparisons'+name+'.png',dpi = 100)
-
 # Set some parameters
 IMG_WIDTH = 256
 IMG_HEIGHT = 256
 IMG_CHANNELS = 3
 TRAIN_PATH = 'stage1_train/'
 TEST_PATH = 'stage1_test/'
+augment = False
 
 warnings.filterwarnings('ignore', category=UserWarning, module='skimage')
 seed = 42
@@ -65,6 +62,39 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         mask=mask.astype(np.bool)
 	X_train.append(img)
 	Y_train.append(mask)
+
+	if augment == True:
+		for j in range(0, 10):
+			cloneImg=img
+			cloneMask=mask
+			
+		#randomly flip x axis
+			if random() > 0.5:
+				cloneImg=np.flip(cloneImg, 0)
+				cloneMask=np.flip(cloneMas, 0)
+			
+		#randomly flip y axis 
+			if random() > 0.5:
+				cloneImg=np.flip(cloneImg, 1)
+				cloneMask=np.flip(cloneMask, 1)
+
+		#random rotation
+			if random() > 0.5:
+				rotAngle=360*random()
+				cloneImg=rotate(cloneImg, rotAngle)
+				cloneMask=rotate(cloneMask, rotAngle)
+
+		#randomly shift color palette
+			if random() > 0.5:
+				cloneImg=rgb2hsv(cloneImg)
+			
+		#randomly shift color palette
+			if random() > 0.5:
+				cloneImg=hsv2rgb(cloneImg)
+
+			X_train.append(cloneImg)
+			Y_train.append(cloneMask)
+
 	
 	i=i+1
 
