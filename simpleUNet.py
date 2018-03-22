@@ -14,10 +14,6 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 from itertools import chain
-from skimage.io import imread, imshow, imread_collection, concatenate_images
-from skimage.transform import resize
-from skimage.morphology import label
-from skimage.color import rgb2gray
 
 from keras.models import Model, load_model
 from keras.layers import Input
