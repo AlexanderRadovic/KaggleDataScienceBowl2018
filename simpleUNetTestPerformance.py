@@ -1,6 +1,7 @@
-#macro to produce several plots to help understand this dataset.
+#macro to run my simple u-net on the test dataset and convert the output for submission
 #thanks to:
 #-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
+#-the github repo unet-tensorflow-keras
 import os
 import sys
 import random

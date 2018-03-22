@@ -1,4 +1,4 @@
-#macro to produce several plots to help understand this dataset.
+#macro to produce several plots to help understand this dataset, in particular pixel saturation in different dataset images.
 #thanks to:
 #-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
 import os
@@ -76,22 +76,6 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         flatImg_r1=img[:,:,0].flatten()
         flatImg_r2=img[:,:,1].flatten()
         flatImg_r3=img[:,:,2].flatten()
-
-        # print flatImg_r1[0]
-        # print flatImg_r2[0]
-        # print flatImg_r3[0]
-        # print flatImg_r1[10]
-        # print flatImg_r2[10]
-        # print flatImg_r3[10]
-
-        # print flatImg_r1.shape
-        # print flatImg_r2.shape
-        # print flatImg_r3.shape
-
-
-        # print np.count_nonzero(flatImg_r1)
-        # print np.count_nonzero(flatImg_r2)
-        # print np.count_nonzero(flatImg_r3)
         
         if np.mean(flatImg_r1)==np.mean(flatImg_r2) and np.mean(flatImg_r1)==np.mean(flatImg_r3): 
                 nGrey=nGrey+1
@@ -126,8 +110,6 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         Y_train[n] = mask
         i=i+1
 
-
-print X_intensity_grey[0]
 # Get and resize test images
 X_test = np.zeros((len(test_ids), IMG_HEIGHT, IMG_WIDTH, IMG_CHANNELS), dtype=np.uint8)
 sizes_test = []
@@ -142,15 +124,6 @@ for n, id_ in tqdm(enumerate(test_ids), total=len(test_ids)):
     X_test[n] = img
 
 print('Done!')
-
-# Check if training data looks all right
-# ix = random.randint(0, len(train_ids))
-# imshow(X_train[ix])
-# plt.show()
-# plt.savefig('exampleEvent.png',dpi = 100)
-# imshow(np.squeeze(Y_train[ix]))
-# plt.show()
-# plt.savefig('exampleMask.png',dpi = 100)
 
 X_intensity_allcolor = X_intensity_r1+X_intensity_r2+X_intensity_r3; 
 

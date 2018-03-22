@@ -1,7 +1,4 @@
-#macro to produce several plots to help understand this dataset.
-#thanks to:
-#-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
-#-the github repo unet-tensorflow-keras
+#macro to produce plots to help understand how the keras inbuilt data augementation will effect the nuclei dataset
 import os
 import sys
 import random
