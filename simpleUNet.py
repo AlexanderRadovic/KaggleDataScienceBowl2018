@@ -1,4 +1,4 @@
-#macro to produce several plots to help understand this dataset.
+#macro to train a simple U-Net for Nuclei segmentation
 #thanks to:
 #-Kjetil Amdal-Saevik and his Kernel "Keras U-Net starter - LB 0.277"
 #-the github repo unet-tensorflow-keras
