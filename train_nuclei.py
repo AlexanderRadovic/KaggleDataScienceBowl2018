@@ -77,7 +77,7 @@ config.display()
 class NucleiDataset(utils.Dataset):
 
         def load_nuclei(self):
-                TRAIN_PATH = '../stage1_train/'
+                TRAIN_PATH = 'stage1_train/'
                 # Get IDs
                 image_ids = next(os.walk(TRAIN_PATH))[1]
                 self.add_class("nuclei", 1, "nuclei")
@@ -95,7 +95,7 @@ class NucleiDataset(utils.Dataset):
 
 
         def load_mask(self, image_id):
-                TRAIN_PATH = '../stage1_train/'
+                TRAIN_PATH = 'stage1_train/'
                 image_ids = next(os.walk(TRAIN_PATH))[1]
                 image_id=image_ids[image_id]
                 
