@@ -1,7 +1,11 @@
+#macro to train a mask rnn for Nuclei segmentation
+#thanks to:
+#-the github repo Mask-RCNN
+
 import os
 import sys
 
-sys.path.append('/home/alexander/competitionCode/Mask_RCNN')
+sys.path.append(os.path.join(os.getcwd(), 'Mask_RCNN'))
 
 import random
 import math
@@ -21,7 +25,7 @@ from model import log
 from skimage.io import imread
 
 # Root directory of the project
-ROOT_DIR = /home/alexander/competitionCode/Mask_RCNN/ #os.getcwd()
+ROOT_DIR = os.path.join(os.getcwd(), 'Mask_RCNN')
 
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
