@@ -30,7 +30,7 @@ from keras import backend as K
 
 import tensorflow as tf
 
-from model import UNet
+from modelZoo import UNet
 
 
 # Run-length encoding stolen from https://www.kaggle.com/rakhlin/fast-run-length-encoding-python

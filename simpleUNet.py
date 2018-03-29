@@ -26,7 +26,7 @@ from keras import backend as K
 
 import tensorflow as tf
 
-from model import UNet
+from modelZoo import UNet
 
 # Load np array for input data and masks
 X_train = np.load('inputImages.npy')

@@ -31,7 +31,7 @@ from keras import backend as K
 
 import tensorflow as tf
 
-from model import UNet
+from modelZoo import UNet
 
 def combineGenerator(gen1, gen2):
     while True:
@@ -54,14 +54,15 @@ data_gen_args = dict(rotation_range=90.,
                      zoom_range=0.1,
                      fill_mode='wrap')
 
+seed=1
 image_datagen = ImageDataGenerator(**data_gen_args)
 mask_datagen = ImageDataGenerator(**data_gen_args)
 image_datagen_val = ImageDataGenerator()
 mask_datagen_val = ImageDataGenerator()
 
 # Provide the same seed and keyword arguments to the fit and flow methods
-image_generator = image_datagen.flow(X_train[:int(X_train.shape[0]*0.9)], batch_size=16)
-mask_generator = mask_datagen.flow(Y_train[:int(X_train.shape[0]*0.9)], batch_size=16)
+image_generator = image_datagen.flow(X_train[:int(X_train.shape[0]*0.9)], batch_size=16, seed=seed)
+mask_generator = mask_datagen.flow(Y_train[:int(X_train.shape[0]*0.9)], batch_size=16, seed=seed)
 image_generator_val = image_datagen_val.flow(X_train[int(X_train.shape[0]*0.9):])
 mask_generator_val = mask_datagen_val.flow(Y_train[int(X_train.shape[0]*0.9):])
 
