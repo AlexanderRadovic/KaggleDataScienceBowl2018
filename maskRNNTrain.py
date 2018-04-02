@@ -23,6 +23,7 @@ import visualize
 from model import log
 
 from skimage.io import imread
+from nucleiDataConfigs import NucleiDataset
 
 # Root directory of the project
 ROOT_DIR = os.path.join(os.getcwd(), 'Mask_RCNN')
@@ -37,9 +38,9 @@ if not os.path.exists(COCO_MODEL_PATH):
         utils.download_trained_weights(COCO_MODEL_PATH)
 
 class NucleiConfig(Config):
-    """Configuration for training on the toy shapes dataset.
+    """Configuration for training on the kaggle nuclei
     Derives from the base Config class and overrides values specific
-    to the toy shapes dataset.
+    to the nuclei dataset.
     """
     # Give the configuration a recognizable name
     NAME = "nuclei"
@@ -72,56 +73,6 @@ class NucleiConfig(Config):
 
 config = NucleiConfig()
 config.display()
-
-
-class NucleiDataset(utils.Dataset):
-
-        def load_nuclei(self):
-                TRAIN_PATH = 'stage1_train/'
-                # Get IDs
-                image_ids = next(os.walk(TRAIN_PATH))[1]
-                self.add_class("nuclei", 1, "nuclei")
-
-                
-                # Add images
-                j=0
-                for i in image_ids:
-                        fullpath= TRAIN_PATH + i + '/images/' + i + '.png'
-                        self.add_image(
-                                "nuclei",
-                                image_id=i,
-                                path=fullpath)
-                        j+=1
-
-
-        def load_mask(self, image_id):
-                TRAIN_PATH = 'stage1_train/'
-                image_ids = next(os.walk(TRAIN_PATH))[1]
-                image_id=image_ids[image_id]
-                
-                instance_masks = []
-                class_ids = []
-                
-                path = TRAIN_PATH + image_id
-
-                for mask_file in next(os.walk(path + '/masks/'))[2]:
-                        mask_ = imread(path + '/masks/' + mask_file)
-
-                        class_id = 1
-                                                
-                        m = mask_.astype(np.bool)
-
-                        # Some objects are so small that they're less than 1 pixel area
-                        # and end up rounded out. Skip those objects.
-                        if m.max() < 1:
-                                continue
-
-                        instance_masks.append(m)
-                        class_ids.append(class_id)
-
-                mask = np.stack(instance_masks, axis=2)
-                class_ids = np.array(class_ids, dtype=np.int32)
-                return mask, class_ids
 
 dataset_train = NucleiDataset()
 dataset_train.load_nuclei()
