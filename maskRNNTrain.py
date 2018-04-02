@@ -23,7 +23,7 @@ import visualize
 from model import log
 
 from skimage.io import imread
-from nucleiDataConfigs import NucleiDataset
+from nucleiDataConfigs import NucleiDatasetTest, NucleiDatasetTrain
 
 # Root directory of the project
 ROOT_DIR = os.path.join(os.getcwd(), 'Mask_RCNN')
@@ -74,22 +74,21 @@ class NucleiConfig(Config):
 config = NucleiConfig()
 config.display()
 
-dataset_train = NucleiDataset()
+dataset_train = NucleiDatasetTrain()
 dataset_train.load_nuclei()
 dataset_train.prepare()
 
-dataset_val = NucleiDataset()
-dataset_val.load_nuclei(test = True)
+dataset_val = NucleiDatasetTest()
+dataset_val.load_nuclei()
 dataset_val.prepare()
 
 # Load and display a test
-for i in range(0,10):
-        TRAIN_PATH = '../stage1_train/'
-        image = dataset_train.load_image(i)
-        mask, class_ids = dataset_train.load_mask(i)
-        print(class_ids)
-        visualize.display_top_masks(image, mask, class_ids,['background','nuclei'])
+# for i in range(0,10):
+#         image = dataset_val.load_image(i)
+#         mask, class_ids = dataset_val.load_mask(i)
+#         visualize.display_top_masks(image, mask, class_ids,['background','nuclei'])
         
+
 # Create model in training mode
 model = modellib.MaskRCNN(mode="training", config=config,
                           model_dir=MODEL_DIR)
