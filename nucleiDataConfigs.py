@@ -64,8 +64,7 @@ class NucleiDatasetTrain(utils.Dataset):
                 indicies = indicies[:int(0.9*len(image_ids))]
                 
                 image_id=image_ids[indicies[image_id]]
-                print (image_id)
-                
+                                
                 instance_masks = []
                 class_ids = []
                 
@@ -129,8 +128,7 @@ class NucleiDatasetTest(utils.Dataset):
                 indicies = indicies[int(0.9*len(image_ids)):]
                 
                 image_id=image_ids[indicies[image_id]]
-                print (image_id)
-                
+                                
                 instance_masks = []
                 class_ids = []
                 
