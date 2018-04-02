@@ -79,7 +79,7 @@ dataset_train.load_nuclei()
 dataset_train.prepare()
 
 dataset_val = NucleiDataset()
-dataset_val.load_nuclei()
+dataset_val.load_nuclei(test = True)
 dataset_val.prepare()
 
 # Load and display a test

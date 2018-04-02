@@ -1,4 +1,6 @@
-#macro to train a mask rnn for Nuclei segmentation
+#class inheriting from the Mask-RCNN packages Dataset class
+#replaces some methods so that the kaggle nuclei dataset can be
+#loaded correctly
 #thanks to:
 #-the github repo Mask-RCNN
 
@@ -26,23 +28,29 @@ from skimage.io import imread
 
 class NucleiDataset(utils.Dataset):
 
-        def load_nuclei(self):
+        def load_nuclei(self, test = False, randomseed = 1337):
                 TRAIN_PATH = 'stage1_train/'
                 # Get IDs
                 image_ids = next(os.walk(TRAIN_PATH))[1]
+
+                np.random.seed(randomseed)
+                indicies=np.arange(len(image_ids))
+                np.random.shuffle(indicies)
+                
                 self.add_class("nuclei", 1, "nuclei")
 
+                if test == False:
+                        indicies = indicies[:int(0.9*len(image_ids))]
+                else:
+                        indicies = indicies[int(0.9*len(image_ids)):]
                 
                 # Add images
-                j=0
-                for i in image_ids:
-                        fullpath= TRAIN_PATH + i + '/images/' + i + '.png'
+                for i in indicies:
+                        fullpath= TRAIN_PATH + image_ids[i] + '/images/' + image_ids[i] + '.png'
                         self.add_image(
                                 "nuclei",
                                 image_id=i,
                                 path=fullpath)
-                        j+=1
-
 
         def load_mask(self, image_id):
                 TRAIN_PATH = 'stage1_train/'
