@@ -37,9 +37,9 @@ model.compile(optimizer='adam', loss='binary_crossentropy')
 model.summary()
 
 # Fit model
-earlystopper = EarlyStopping(patience=5, verbose=1)
+earlystopper = EarlyStopping(patience=50, verbose=1)
 checkpointer = ModelCheckpoint('model-dsbowl2018-1.h5', verbose=1, save_best_only=True)
 results = model.fit(X_train, Y_train,
-                        validation_split=0.1, batch_size=16, epochs=50,
+                        validation_split=0.1, batch_size=16, epochs=80,
                         callbacks=[earlystopper, checkpointer])
 
