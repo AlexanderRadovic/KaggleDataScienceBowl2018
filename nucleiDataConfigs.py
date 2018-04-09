@@ -91,7 +91,7 @@ class NucleiDatasetTrain(utils.Dataset):
 
 
 
-class NucleiDatasetTest(utils.Dataset):
+class NucleiDatasetVal(utils.Dataset):
 
         def load_nuclei(self):
                 TRAIN_PATH = 'stage1_train/'
@@ -152,4 +152,29 @@ class NucleiDatasetTest(utils.Dataset):
                 mask = np.stack(instance_masks, axis=2)
                 class_ids = np.array(class_ids, dtype=np.int32)
                 return mask, class_ids
+
+
+
+class NucleiDatasetTest(utils.Dataset):
+
+        def load_nuclei(self):
+                TRAIN_PATH = 'stage1_test/'
+                # Get IDs
+                image_ids = next(os.walk(TRAIN_PATH))[1]
+
+                indicies=np.arange(len(image_ids))
+                
+                self.add_class("nuclei", 1, "nuclei")
+
+                # Add images
+                j=0
+                for i in indicies:
+                        fullpath= TRAIN_PATH + image_ids[i] + '/images/' + image_ids[i] + '.png'
+                        self.add_image(
+                                "nuclei",
+                                image_id=j,
+                                path=fullpath)
+                        j+=1
+
+
 

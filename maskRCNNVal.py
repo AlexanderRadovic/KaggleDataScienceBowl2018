@@ -23,7 +23,7 @@ import visualize
 from model import log
 
 from skimage.io import imread
-from nucleiDataConfigs import NucleiDatasetTest, NucleiDatasetTrain
+from nucleiDataConfigs import NucleiDatasetVal, NucleiDatasetTrain
 
 # Root directory of the project
 ROOT_DIR = os.path.join(os.getcwd(), 'Mask_RCNN')
@@ -82,7 +82,7 @@ class NucleiConfig(Config):
     # use small validation steps since the epoch is small
     VALIDATION_STEPS = 5
 
-dataset_val = NucleiDatasetTest()
+dataset_val = NucleiDatasetVal()
 dataset_val.load_nuclei()
 dataset_val.prepare()
 
