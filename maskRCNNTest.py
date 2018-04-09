@@ -42,12 +42,14 @@ def prob_to_rles(x, IMG_HEIGHT, IMG_WIDTH):
         totalMask=np.zeros((IMG_HEIGHT,IMG_WIDTH))
         for i in range(x.shape[2]):
                 resizeMask = resize(x[:,:,i], (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
+
+                #carefully avoid overlapping masks 
                 resizeMaskInput = resizeMask-totalMask 
-                #print (resizeMask.shape)
-                #plt.imshow(totalMask)
-                #plt.savefig('test'+str(i)+'.png',dpi = 100)
                 totalMask = totalMask+resizeMask
-                #print (np.where(x.T.flatten() == 1)[0])
+                maskPoints = np.where(resizeMaskInput.T.flatten() == 1)[0]
+                if len(maskPoints) == 0:
+                        continue
+                
                 yield rle_encoding(resizeMaskInput)
 
                 
