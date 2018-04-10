@@ -7,27 +7,27 @@ Many thanks to the git repo's:
 Which I have found particularly useful.
 
 ## Data Exploration, Formating Scripts:
-- dataSetExploration.py a script to plots some dataset examples and characteristics of the dataset
-- convertToNPY.py convert our sample to a numpy file for ease of use, tools to apply dataset augmentations optional here
-- inspectAugment.py script to explore possible dataset augmentations
-- testGenerator.py script to check generator behavior, important for shared image/mask augmentations
+- **dataSetExploration.py** a script to plots some dataset examples and characteristics of the dataset
+- **convertToNPY.py** convert our sample to a numpy file for ease of use, tools to apply dataset augmentations optional here
+- **inspectAugment.py** script to explore possible dataset augmentations
+- **testGenerator.py** script to check generator behavior, important for shared image/mask augmentations
 
 ## UNet Solution Scripts
-- simpleUNet.py a script to train a simple UNet on the nuclei dataset
-- simpleUNetValPerformance.py a script to check UNet performance on the valdiation dataset, in particular making plots of true and predicted masks to compare
-- simpleUNetTestPerformance.py a script to produced the final kaggle submission csv on the test dataset
-- modelZoo.py local copy of the UNet definition
-- simpleUNetAugmentInput.py  first attempt at on the fly data augmentation for UNet Training
+- **simpleUNet.py** a script to train a simple UNet on the nuclei dataset
+- **simpleUNetValPerformance.py** a script to check UNet performance on the valdiation dataset, in particular making plots of true and predicted masks to compare
+- **simpleUNetTestPerformance.py** a script to produced the final kaggle submission csv on the test dataset
+- **modelZoo.py** local copy of the UNet definition
+- **simpleUNetAugmentInput.py** first attempt at on the fly data augmentation for UNet Training
 
 ## MaskRCNN Scripts
-- maskRCNNTrain.py a script to train a maskRCNN based approach to nuclei masking
-- maskRCNNVal.py a script to check maskRCNN performance on the validation dataset, in particular making plots of true and predicted masks to compare
-- maskRCNNTest.py a script to produce the final kaggle submission csv on the test dataset
-- nucleiDataConfigs.py classes in the style of the MaskRCNN implementation I use, which describe how to load the training images.
+- **maskRCNNTrain.py** a script to train a maskRCNN based approach to nuclei masking
+- **maskRCNNVal.py** a script to check maskRCNN performance on the validation dataset, in particular making plots of true and predicted masks to compare
+- **maskRCNNTest.py** a script to produce the final kaggle submission csv on the test dataset
+- **nucleiDataConfigs.py** classes in the style of the MaskRCNN implementation I use, which describe how to load the training images.
 
 ## TODO:
--Explore augmentation through zooming on larger images
--Explore splitting images up rather than resizing
--Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.
--Explore using UNet output as an extra channel for MaskRCNN
+- Explore augmentation through zooming on larger images
+- Explore splitting images up rather than resizing
+- Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.
+- Explore using UNet output as an extra channel for MaskRCNN
 
