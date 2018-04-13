@@ -62,11 +62,14 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
             else:
                 mask_=mask_[:,:,0]
                 mask_ = np.expand_dims(resize(mask_, (IMG_HEIGHT, IMG_WIDTH), mode='constant',preserve_range=True), axis=-1)
-
+                mask_=mask_>250
             mask = np.maximum(mask, mask_)
 
         img=img.astype(np.uint8)
         mask=mask.astype(np.bool)
+        plt.imsave('test/test'+str(id_)+'.png',np.squeeze(mask))
+        plt.clf()
+
         X_train.append(img)
         Y_train.append(mask)
         
@@ -86,7 +89,7 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
                                                 else:
                                                         mask_=mask_[:,:,0]
                                                         mask_ = np.expand_dims(resize(mask_, (IMG_HEIGHT, IMG_WIDTH), mode='constant',preserve_range=True), axis=-1)
-
+                                                        mask_=mask_>250
                                                 mask = np.maximum(mask, mask_)
                                                 
                                         subImg=subImg.astype(np.uint8)
