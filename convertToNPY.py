@@ -67,8 +67,8 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 
         img=img.astype(np.uint8)
         mask=mask.astype(np.bool)
-        plt.imsave('test/test'+str(id_)+'.png',np.squeeze(mask))
-        plt.clf()
+        #plt.imsave('test/test'+str(id_)+'.png',np.squeeze(mask))
+        #plt.clf()
 
         X_train.append(img)
         Y_train.append(mask)
@@ -76,11 +76,17 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
         if augment == True:
 		#create alternative mask/image pairs out of the larger training examples
                 if imgOrig.shape[0]>IMG_HEIGHT or imgOrig.shape[0]>IMG_WIDTH:
-                        for i in range(math.ceil(IMG_HEIGHT/imgOrig.shape[0])):
-                                for j in range(math.ceil(IMG_HEIGHT/imgOrig.shape[0])):
+                        for i in range(math.ceil(imgOrig.shape[0]/IMG_HEIGHT)):
+                                for j in range(math.ceil(imgOrig.shape[1]/IMG_HEIGHT)):
+                                        #print (imgOrig.shape[0]/IMG_HEIGHT)
+                                        #print (imgOrig.shape[1]/IMG_HEIGHT)
+                                        if i+1==math.ceil(imgOrig.shape[0]/IMG_HEIGHT) or j+1==math.ceil(imgOrig.shape[1]/IMG_HEIGHT):
+                                                continue
+
                                         subImg=imgOrig[i*IMG_HEIGHT:(i+1)*IMG_HEIGHT,j*IMG_WIDTH:(j+1)*IMG_WIDTH,:]
                                         subImg = resize(subImg, (IMG_HEIGHT, IMG_WIDTH), mode='constant', preserve_range=True)
                                         subMask = np.zeros((IMG_HEIGHT, IMG_WIDTH, 1), dtype=np.bool)
+
                                         for mask_file in next(os.walk(path + '/masks/'))[2]:
                                                 mask_ = imread(path + '/masks/' + mask_file)
                                                 mask_ = mask_[i*IMG_HEIGHT:(i+1)*IMG_HEIGHT,j*IMG_WIDTH:(j+1)*IMG_WIDTH]
@@ -90,13 +96,17 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
                                                         mask_=mask_[:,:,0]
                                                         mask_ = np.expand_dims(resize(mask_, (IMG_HEIGHT, IMG_WIDTH), mode='constant',preserve_range=True), axis=-1)
                                                         mask_=mask_>250
-                                                mask = np.maximum(mask, mask_)
-                                                
+                                                subMask = np.maximum(subMask, mask_)
+
                                         subImg=subImg.astype(np.uint8)
                                         subMask=subMask.astype(np.bool)
                                         X_train.append(subImg)
                                         Y_train.append(subMask)
+                                        #plt.imsave('test/mask'+str(id_)+'_'+str(i)+'_'+str(j)+'.png',np.squeeze(subMask))
+                                        #plt.imsave('test/img'+str(id_)+'_'+str(i)+'_'+str(j)+'.png',subImg)
+                                        #plt.clf()
 
+                                        
 		        # for j in range(0, 10):
 			#         cloneImg=img
 			#         cloneMask=mask

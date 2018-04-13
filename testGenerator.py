@@ -26,30 +26,67 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from keras import backend as K
 
-
 import tensorflow as tf
 
-from model import UNet
+from modelZoo import UNet
+
+def combineGenerator(gen1, gen2):
+    while True:
+        yield(gen1.next(),gen2.next())
+
 
 # Load np array for input data and masks
-X_train = np.load('inputImages.npy')
+X_train = np.load('inputImagesHRes.npy')
+Y_train = np.load('inputMaskHRes.npy')
+
+batch=4
+
+np.random.seed(1337)
+np.random.shuffle(X_train)
+np.random.seed(1337)
+np.random.shuffle(Y_train)
+
+# Create a generator to applt data augmentations as we train
 
 # we create two instances with the same arguments
-data_gen_args = dict(rotation_range=90.,
+data_gen_args = dict(horizontal_flip=True,
+                     vertical_flip=True,
+                     rotation_range=45.,
+                     cval=0,
                      shear_range=0.2,
                      width_shift_range=0.1,
                      height_shift_range=0.1,
-                     horizontal_flip=True,
-                     vertical_flip=True,
-                     zoom_range=0.1,
-                     fill_mode='wrap')
+                     zoom_range=[0.8,1],
+                     fill_mode='constant')
 
+seed=1
 image_datagen = ImageDataGenerator(**data_gen_args)
+mask_datagen = ImageDataGenerator(**data_gen_args)
+image_datagen_val = ImageDataGenerator()
+mask_datagen_val = ImageDataGenerator()
 
-i = 0
-for batch in image_datagen.flow(X_train, batch_size=1, save_to_dir='plots/testAug/',save_prefix='example_',save_format='png'):
-    i += 1
-    if i > 20:
-        break
+# Provide the same seed and keyword arguments to the fit and flow methods
+image_generator = image_datagen.flow(X_train[:int(X_train.shape[0]*0.9)], batch_size=batch, seed=seed)
+mask_generator = mask_datagen.flow(Y_train[:int(X_train.shape[0]*0.9)], batch_size=batch, seed=seed)
+image_generator_val = image_datagen_val.flow(X_train[int(X_train.shape[0]*0.9):], seed=seed)
+mask_generator_val = mask_datagen_val.flow(Y_train[int(X_train.shape[0]*0.9):], seed=seed)
+
+# Combine generators into one which yields image and masks
+train_generator = combineGenerator(image_generator, mask_generator)
+validation_generator = combineGenerator(image_generator_val, mask_generator_val)
+
+
+for i in range(0,100):
+    image=image_generator[i]
+    image=image[0,:,:,:]
+    print (image.shape)
+    plt.imshow(image)
+    plt.show()
+    mask=mask_generator[i]
+    mask=mask[0,:,:,0]
+    print (np.count_nonzero(mask))
+    print (mask.shape)
+    plt.imshow(mask)
+    plt.show()
 
     
