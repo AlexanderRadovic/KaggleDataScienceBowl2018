@@ -18,6 +18,8 @@ Which I have found particularly useful.
 - **simpleUNetTestPerformance.py** a script to produced the final kaggle submission csv on the test dataset
 - **modelZoo.py** local copy of the UNet definition
 - **simpleUNetAugmentInput.py** first attempt at on the fly data augmentation for UNet Training
+- **finalUNetTestSolution.py** more complete solution where I recluster each group of connected hits using a kmeans algorithm
+- **cluster101.py** simple script to test different clustering algorithms
 
 ## MaskRCNN Scripts
 - **maskRCNNTrain.py** a script to train a maskRCNN based approach to nuclei masking
@@ -26,8 +28,8 @@ Which I have found particularly useful.
 - **nucleiDataConfigs.py** classes in the style of the MaskRCNN implementation I use, which describe how to load the training images.
 
 ## TODO:
-- Explore augmentation through zooming on larger images
+- ~~Explore augmentation through zooming on larger images~~
 - Explore splitting images up rather than resizing
-- Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.
+- ~~Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.~~
 - Explore using UNet output as an extra channel for MaskRCNN
 
