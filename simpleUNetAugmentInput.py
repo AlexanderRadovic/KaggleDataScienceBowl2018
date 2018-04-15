@@ -39,20 +39,29 @@ def combineGenerator(gen1, gen2):
 
 
 # Load np array for input data and masks
-X_train = np.load('inputImages.npy')
-Y_train = np.load('inputMask.npy')
+X_train = np.load('inputImagesHRes.npy')
+Y_train = np.load('inputMaskHRes.npy')
+
+batch=4
+
+np.random.seed(1337)
+np.random.shuffle(X_train)
+np.random.seed(1337)
+np.random.shuffle(Y_train)
 
 # Create a generator to applt data augmentations as we train
 
 # we create two instances with the same arguments
-data_gen_args = dict(rotation_range=90.,
-                     shear_range=0.2,
-                     width_shift_range=0.1,
-                     height_shift_range=0.1,
-                     horizontal_flip=True,
+data_gen_args = dict(horizontal_flip=True,
                      vertical_flip=True,
-                     zoom_range=0.1,
-                     fill_mode='wrap')
+                     #rotation_range=45.,
+                     cval=0,
+                     #shear_range=0.2,
+                     #width_shift_range=0.1,
+                     #height_shift_range=0.1,
+                     zoom_range=[0.8,1],
+                     fill_mode='constant')
+
 
 seed=1
 image_datagen = ImageDataGenerator(**data_gen_args)
@@ -61,10 +70,11 @@ image_datagen_val = ImageDataGenerator()
 mask_datagen_val = ImageDataGenerator()
 
 # Provide the same seed and keyword arguments to the fit and flow methods
-image_generator = image_datagen.flow(X_train[:int(X_train.shape[0]*0.9)], batch_size=16, seed=seed)
-mask_generator = mask_datagen.flow(Y_train[:int(X_train.shape[0]*0.9)], batch_size=16, seed=seed)
-image_generator_val = image_datagen_val.flow(X_train[int(X_train.shape[0]*0.9):])
-mask_generator_val = mask_datagen_val.flow(Y_train[int(X_train.shape[0]*0.9):])
+image_generator = image_datagen.flow(X_train[:int(X_train.shape[0]*0.9)], batch_size=batch, seed=seed)
+print (X_train[:int(X_train.shape[0]*0.9)].shape)
+mask_generator = mask_datagen.flow(Y_train[:int(X_train.shape[0]*0.9)], batch_size=batch, seed=seed)
+image_generator_val = image_datagen_val.flow(X_train[int(X_train.shape[0]*0.9):], seed=seed)
+mask_generator_val = mask_datagen_val.flow(Y_train[int(X_train.shape[0]*0.9):], seed=seed)
 
 # Combine generators into one which yields image and masks
 train_generator = combineGenerator(image_generator, mask_generator)
@@ -76,9 +86,9 @@ model.compile(optimizer='adam', loss='binary_crossentropy')
 model.summary()
 
 # Fit model
-earlystopper = EarlyStopping(patience=5, verbose=1)
-checkpointer = ModelCheckpoint('model-dsbowl2018-1.h5', verbose=1, save_best_only=True)
+earlystopper = EarlyStopping(patience=100, verbose=1)
+checkpointer = ModelCheckpoint('model-dsbowl2018-1-augment.h5', verbose=1, save_best_only=True)
 results = model.fit_generator(train_generator,
-                              validation_data=validation_generator, steps_per_epoch=len(X_train)/16,
-                              epochs=50, validation_steps=0.1*len(X_train),
+                              validation_data=validation_generator, steps_per_epoch=len(X_train)/batch,
+                              epochs=5000, validation_steps=0.1*len(X_train),
                               callbacks=[earlystopper, checkpointer])

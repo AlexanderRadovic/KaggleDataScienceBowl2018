@@ -44,8 +44,8 @@ class UNet():
 
         concat_axis = 3
         inputs = layers.Input(shape = img_shape)
-        scale = layers.Lambda(lambda x: x / 255) (inputs)
-        conv1 = layers.Conv2D(32, (3, 3), activation='relu', padding='same', name='conv1_1')(scale)
+        #scale = layers.Lambda(lambda x: x / 255) (inputs)
+        conv1 = layers.Conv2D(32, (3, 3), activation='relu', padding='same', name='conv1_1')(inputs)#scale)
         #conv1 = layers.Dropout(0.1)(conv1)
         conv1 = layers.Conv2D(32, (3, 3), activation='relu', padding='same')(conv1)
         pool1 = layers.MaxPooling2D(pool_size=(2, 2))(conv1)
