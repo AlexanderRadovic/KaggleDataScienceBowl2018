@@ -67,6 +67,9 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 
         img=img.astype(np.uint8)
         mask=mask.astype(np.bool)
+        if np.count_nonzero(mask)==0:
+                print('no mask! '+str(id_))
+                continue
         #plt.imsave('test/test'+str(id_)+'.png',np.squeeze(mask))
         #plt.clf()
 
@@ -100,6 +103,10 @@ for n, id_ in tqdm(enumerate(train_ids), total=len(train_ids)):
 
                                         subImg=subImg.astype(np.uint8)
                                         subMask=subMask.astype(np.bool)
+                                        if np.count_nonzero(subMask)==0:
+                                                print('no mask! '+str(id_))
+                                                continue
+
                                         X_train.append(subImg)
                                         Y_train.append(subMask)
                                         #plt.imsave('test/mask'+str(id_)+'_'+str(i)+'_'+str(j)+'.png',np.squeeze(subMask))
