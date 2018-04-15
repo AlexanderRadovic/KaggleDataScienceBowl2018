@@ -51,12 +51,12 @@ np.random.shuffle(Y_train)
 # we create two instances with the same arguments
 data_gen_args = dict(horizontal_flip=True,
                      vertical_flip=True,
-                     rotation_range=45.,
+                     #rotation_range=45.,
                      cval=0,
-                     shear_range=0.2,
-                     width_shift_range=0.1,
-                     height_shift_range=0.1,
-                     zoom_range=[0.8,1],
+                     #shear_range=0.2,
+                     #width_shift_range=0.1,
+                     #height_shift_range=0.1,
+                     zoom_range=[0.9,1],
                      fill_mode='constant')
 
 seed=1
