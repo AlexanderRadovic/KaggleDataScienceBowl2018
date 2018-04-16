@@ -24,6 +24,7 @@ import visualize
 from model import log
 
 from skimage.io import imread
+from imgaug import augmenters as imga
 from nucleiDataConfigs import NucleiDatasetVal, NucleiDatasetTrain, NucleiConfig
 
 # Root directory of the project
@@ -90,10 +91,21 @@ model = modellib.MaskRCNN(mode="training", config=config,
 # Passing layers="all" trains all layers. You can also
 # pass a regular expression to select which layers to
 # train by name pattern.
+
+augmentation = imga.SomeOf((0, 2), [
+        imga.Fliplr(0.5),
+        imga.Flipud(0.5),
+        imga.OneOf([imga.Affine(rotate=90),
+                   imga.Affine(rotate=180),
+                   imga.Affine(rotate=270)]),
+        imga.Multiply((0.8, 1.5)),
+        imga.GaussianBlur(sigma=(0.0, 5.0))])
+
 model.train(dataset_train, dataset_val,
-                        learning_rate=config.LEARNING_RATE,# / 10,
-                        epochs=30,
-                        layers="all")
+            learning_rate=config.LEARNING_RATE,# / 10,
+            epochs=100,
+            augmentation=augmentation,
+            layers="all")
 
 
 
