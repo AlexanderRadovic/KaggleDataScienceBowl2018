@@ -29,7 +29,7 @@ Which I have found particularly useful.
 
 ## TODO:
 - ~~Explore augmentation through zooming on larger images~~
-- Explore splitting images up rather than resizing
+- ~~Explore splitting images up rather than resizing~~
 - ~~Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.~~
-- Explore using UNet output as an extra channel for MaskRCNN
+- ~~Explore using UNet output as an extra channel for MaskRCNN~~
 
