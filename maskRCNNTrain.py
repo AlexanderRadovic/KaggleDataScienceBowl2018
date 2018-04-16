@@ -32,12 +32,6 @@ ROOT_DIR = os.path.join(os.getcwd(), 'Mask_RCNN')
 
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
-
-# Local path to trained weights file
-COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
-# Download COCO trained weights from Releases if needed
-if not os.path.exists(COCO_MODEL_PATH):
-        utils.download_trained_weights(COCO_MODEL_PATH)
     
 config = NucleiConfig()
 config.display()
@@ -48,49 +42,14 @@ dataset_train.prepare()
 
 dataset_val = NucleiDatasetVal()
 dataset_val.load_nuclei()
-dataset_val.prepare()
-
-# Load and display a test
-# for i in range(0,10):
-#         image = dataset_val.load_image(i)
-#         mask, class_ids = dataset_val.load_mask(i)
-#         visualize.display_top_masks(image, mask, class_ids,['background','nuclei'])
-        
+dataset_val.prepare()        
 
 # Create model in training mode
 model = modellib.MaskRCNN(mode="training", config=config,
                           model_dir=MODEL_DIR)
 
-# Which weights to start with?
-#init_with = "imagenet"  # imagenet, coco, or last
 
-#if init_with == "imagenet":
-#            model.load_weights(model.get_imagenet_weights(), by_name=True)
-#elif init_with == "coco":
-            # Load weights trained on MS COCO, but skip layers that
-            # are different due to the different number of classes
-            # See README for instructions to download the COCO weights
-#            model.load_weights(COCO_MODEL_PATH, by_name=True,
-#                               exclude=["mrcnn_class_logits", "mrcnn_bbox_fc",
-#                                        "mrcnn_bbox", "mrcnn_mask"])
-#elif init_with == "last":
-            # Load the last model you trained and continue training
-
-
-
-# Train the head branches
-# Passing layers="heads" freezes all layers except the head
-# layers. You can also pass a regular expression to select
-# which layers to train by name pattern.
-#model.train(dataset_train, dataset_val,
-#            learning_rate=config.LEARNING_RATE,
-#            epochs=2,
-#            layers='heads')
-
-# Fine tune all layers
-# Passing layers="all" trains all layers. You can also
-# pass a regular expression to select which layers to
-# train by name pattern.
+model.load_weights('Mask_RCNN/logs/nuclei20180416T0614/mask_rcnn_nuclei_0025.h5',by_name=True)
 
 augmentation = imga.SomeOf((0, 2), [
         imga.Fliplr(0.5),

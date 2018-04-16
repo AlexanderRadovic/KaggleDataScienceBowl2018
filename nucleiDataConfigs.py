@@ -84,11 +84,17 @@ class NucleiConfig(Config):
     DETECTION_MAX_INSTANCES=400
     
     # Cover one pass of the data each epoch
-    STEPS_PER_EPOCH = 166
+    STEPS_PER_EPOCH = 221
         
     # Pass through whole validation sample each epoch
-    VALIDATION_STEPS = 18
+    VALIDATION_STEPS = 25
 
+class NucleiConfigInference(NucleiConfig):
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+    IMAGE_RESIZE_MODE = "pad64"
+    RPN_NMS_THRESHOLD = 0.7
+    
 class NucleiDatasetTrain(utils.Dataset):
 
         def load_image(self, image_id):
@@ -284,6 +290,14 @@ class NucleiDatasetTest(utils.Dataset):
                 unetLoc=imageLoc.replace('.png','_unetsol.png')
                 # Load image
                 base_image = imread(self.image_info[image_id]['path'])
+
+                if base_image.ndim==2:
+                    placeHolder=np.zeros((base_image.shape[0],base_image.shape[1],3))
+                    placeHolder[:,:,0]=base_image
+                    placeHolder[:,:,1]=base_image
+                    placeHolder[:,:,2]=base_image
+                    base_image=placeHolder
+
                 unet_image = imread(self.image_info[image_id]['path'])
         
                 div = base_image.max(axis=tuple(np.arange(1,len(base_image.shape))), keepdims=True) 
@@ -303,7 +317,7 @@ class NucleiDatasetTest(utils.Dataset):
 
         
         def load_nuclei(self):
-                TRAIN_PATH = 'stage1_test/'
+                TRAIN_PATH = 'stage2_test_final/'
                 # Get IDs
                 image_ids = next(os.walk(TRAIN_PATH))[1]
 
