@@ -25,9 +25,97 @@ import visualize
 from model import log
 
 from skimage.io import imread
+from skimage.color import rgb2gray
+
+class NucleiConfig(Config):
+    """Configuration for training on the kaggle nuclei
+    Derives from the base Config class and overrides values specific
+    to the nuclei dataset.
+
+    Updated to include some suggested settings from the Mask_RCNN git repo (thanks!).
+    """
+    # Give the configuration a recognizable name
+    NAME = "nuclei"
+    
+    # Train on 1 GPU and 8 images per GPU. We can put multiple images on each
+    # GPU because the images are small. Batch size is 8 (GPUs * images/GPU).
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 3
+
+    #backbone network architecture
+    #two options here, we want the smaller one
+    BACKBONE = "resnet50"
+    
+    # Number of classes (including background)
+    NUM_CLASSES = 1 + 1  # background + 3 shapes
+    DETECT_MIN_CONFIDENCE = 0
+    
+    #As large as can fit on my local gpu. Crop to keep as much data as possible
+    IMAGE_RESIZE_MODE = "crop"
+    IMAGE_MIN_DIM = 384
+    IMAGE_MAX_DIM = 384
+    IMAGE_MIN_SCALE = 2.0
+
+    # Use smaller anchors because our image and objects are small
+    RPN_ANCHOR_SCALES = (8, 16, 32, 64, 128)  # anchor side in pixels
+
+    # ROIs kept after non-maxium suppression
+    POST_NMS_ROIS_TRAINING = 1000
+    POST_NMS_ROIS_INFERENCE = 2000
+
+    #Non-max suppresion threshold to filter RPHN proposals
+    RPN_NMS_THRESHOLD = 0.9
+    
+    # Huge range in number of ROIS expected. Split the difference for training.
+    TRAIN_ROIS_PER_IMAGE = 128
+
+    #Image means, subtract to improve training. Because I scale and add an extra channel
+    #of information mine is a little different to the RGB standard
+    MEAN_PIXEL = np.array([0.5,0.5,0.5,0.5])
+
+    #Resize mask to lower memory load
+    USE_MINI_MASK = True
+    MINI_MASK_SHAPE= (56,56)
+
+    #Max number of GT masks for training
+    MAX_GT_INSTANCES = 200
+
+    #Max number of final detections per image
+    DETECTION_MAX_INSTANCES=400
+    
+    # Cover one pass of the data each epoch
+    STEPS_PER_EPOCH = 166
+        
+    # Pass through whole validation sample each epoch
+    VALIDATION_STEPS = 18
 
 class NucleiDatasetTrain(utils.Dataset):
 
+        def load_image(self, image_id):
+                """Load the specified image and return a [H,W,4] Numpy array.
+                """
+                imageLoc=self.image_info[image_id]['path']
+                unetLoc=imageLoc.replace('.png','_unetsol.png')
+                # Load image
+                base_image = imread(self.image_info[image_id]['path'])
+                unet_image = imread(self.image_info[image_id]['path'])
+        
+                div = base_image.max(axis=tuple(np.arange(1,len(base_image.shape))), keepdims=True) 
+                div[div < 0.01*base_image.mean()] = 1. # protect against too small pixel intensities
+                base_image = base_image.astype(np.float32)/div
+
+                unet_image=rgb2gray(unet_image)
+                div = unet_image.max(axis=tuple(np.arange(1,len(unet_image.shape))), keepdims=True) 
+                div[div < 0.01*unet_image.mean()] = 1. # protect against too small pixel intensities
+                unet_image = unet_image.astype(np.float32)/div
+
+                image=np.zeros((base_image.shape[0],base_image.shape[1],4))
+                image[:,:,:3]=base_image[..., :3]
+                image[:,:,3:]=np.reshape(unet_image,(unet_image.shape[0],unet_image.shape[1],1))
+        
+                return image
+
+        
         def load_nuclei(self):
                 TRAIN_PATH = 'stage1_train/'
                 # Get IDs
@@ -72,7 +160,10 @@ class NucleiDatasetTrain(utils.Dataset):
 
                 for mask_file in next(os.walk(path + '/masks/'))[2]:
                         mask_ = imread(path + '/masks/' + mask_file)
-
+                        if mask_.ndim != 2:
+                            mask_=mask_[:,:,0]
+                            mask_=mask_>250
+                            
                         class_id = 1
                                                 
                         m = mask_.astype(np.bool)
@@ -82,6 +173,7 @@ class NucleiDatasetTrain(utils.Dataset):
                         if m.max() < 1:
                                 continue
 
+                        
                         instance_masks.append(m)
                         class_ids.append(class_id)
 
@@ -92,7 +184,32 @@ class NucleiDatasetTrain(utils.Dataset):
 
 
 class NucleiDatasetVal(utils.Dataset):
+        
+        def load_image(self, image_id):
+                """Load the specified image and return a [H,W,4] Numpy array.
+                """
+                imageLoc=self.image_info[image_id]['path']
+                unetLoc=imageLoc.replace('.png','_unetsol.png')
+                # Load image
+                base_image = imread(self.image_info[image_id]['path'])
+                unet_image = imread(self.image_info[image_id]['path'])
+        
+                div = base_image.max(axis=tuple(np.arange(1,len(base_image.shape))), keepdims=True) 
+                div[div < 0.01*base_image.mean()] = 1. # protect against too small pixel intensities
+                base_image = base_image.astype(np.float32)/div
 
+                unet_image=rgb2gray(unet_image)
+                div = unet_image.max(axis=tuple(np.arange(1,len(unet_image.shape))), keepdims=True) 
+                div[div < 0.01*unet_image.mean()] = 1. # protect against too small pixel intensities
+                unet_image = unet_image.astype(np.float32)/div
+
+                image=np.zeros((base_image.shape[0],base_image.shape[1],4))
+                image[:,:,:3]=base_image[..., :3]
+                image[:,:,3:]=np.reshape(unet_image,(unet_image.shape[0],unet_image.shape[1],1))
+        
+                return image
+
+        
         def load_nuclei(self):
                 TRAIN_PATH = 'stage1_train/'
                 # Get IDs
@@ -136,7 +253,10 @@ class NucleiDatasetVal(utils.Dataset):
 
                 for mask_file in next(os.walk(path + '/masks/'))[2]:
                         mask_ = imread(path + '/masks/' + mask_file)
-
+                        if mask_.ndim != 2:
+                            mask_=mask_[:,:,0]
+                            mask_=mask_>250
+                        
                         class_id = 1
                                                 
                         m = mask_.astype(np.bool)
@@ -157,6 +277,31 @@ class NucleiDatasetVal(utils.Dataset):
 
 class NucleiDatasetTest(utils.Dataset):
 
+        def load_image(self, image_id):
+                """Load the specified image and return a [H,W,4] Numpy array.
+                """
+                imageLoc=self.image_info[image_id]['path']
+                unetLoc=imageLoc.replace('.png','_unetsol.png')
+                # Load image
+                base_image = imread(self.image_info[image_id]['path'])
+                unet_image = imread(self.image_info[image_id]['path'])
+        
+                div = base_image.max(axis=tuple(np.arange(1,len(base_image.shape))), keepdims=True) 
+                div[div < 0.01*base_image.mean()] = 1. # protect against too small pixel intensities
+                base_image = base_image.astype(np.float32)/div
+
+                unet_image=rgb2gray(unet_image)
+                div = unet_image.max(axis=tuple(np.arange(1,len(unet_image.shape))), keepdims=True) 
+                div[div < 0.01*unet_image.mean()] = 1. # protect against too small pixel intensities
+                unet_image = unet_image.astype(np.float32)/div
+
+                image=np.zeros((base_image.shape[0],base_image.shape[1],4))
+                image[:,:,:3]=base_image[..., :3]
+                image[:,:,3:]=np.reshape(unet_image,(unet_image.shape[0],unet_image.shape[1],1))
+        
+                return image
+
+        
         def load_nuclei(self):
                 TRAIN_PATH = 'stage1_test/'
                 # Get IDs
