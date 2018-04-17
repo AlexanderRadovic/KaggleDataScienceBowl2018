@@ -1,5 +1,7 @@
 # Data Bowl 2018
-The repository contains a number of python scripts designed to help solve the [2018 Kaggle Data Science Bowl](https://www.kaggle.com/c/data-science-bowl-2018). Two solutions are developed, one based on the UNet for image segmentation, and the other based on MaskRCNN for instanced segmentation. As we need to not just label nuclei but distinct nuclei an instanced segmentation would seem like a superior approach, but my best result so far is with a relatively simple UNet.
+The repository contains a number of python scripts designed to help solve the [2018 Kaggle Data Science Bowl](https://www.kaggle.com/c/data-science-bowl-2018). Two solutions are developed, one based on the UNet for image segmentation, and the other based on MaskRCNN for instanced segmentation. As we need to not just label nuclei but distinct nuclei an instanced segmentation would seem like a superior approach, but my best result is with a relatively simple UNet.
+
+My final solution implemented a kmeans based reclustering that seemed to dramatically help with the stage1 test set, however it proved a mistake in the final round and actually degraded performance on the stage 2 test set. I suspect this is to do with the fine tuning of when to switch between hypotheses about the number of clusters. In similiar future projects I would focus on instancing via mask-rcnn in combination with unet segmentation.
 
 Many thanks to the git repo's:
 - [UNet For Keras](https://github.com/zizhaozhang/unet-tensorflow-keras)
@@ -27,9 +29,4 @@ Which I have found particularly useful.
 - **maskRCNNTest.py** a script to produce the final kaggle submission csv on the test dataset
 - **nucleiDataConfigs.py** classes in the style of the MaskRCNN implementation I use, which describe how to load the training images.
 
-## TODO:
-- ~~Explore augmentation through zooming on larger images~~
-- ~~Explore splitting images up rather than resizing~~
-- ~~Explore more nuanced conventional computer vision tools to split overlapping masks from the UNet, in particular the watershed algorithm.~~
-- ~~Explore using UNet output as an extra channel for MaskRCNN~~
 
