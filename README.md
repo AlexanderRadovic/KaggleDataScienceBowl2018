@@ -11,8 +11,7 @@ Which I have found particularly useful.
 ## Data Exploration, Formating Scripts:
 - **dataSetExploration.py** a script to plots some dataset examples and characteristics of the dataset
 - **convertToNPY.py** convert our sample to a numpy file for ease of use, tools to apply dataset augmentations optional here
-- **inspectAugment.py** script to explore possible dataset augmentations
-- **testGenerator.py** script to check generator behavior, important for shared image/mask augmentations
+- **testGenerator.py** script to check generator behavior, and to explore possible dataset augmentations important for shared image/mask augmentations
 
 ## UNet Solution Scripts
 - **simpleUNet.py** a script to train a simple UNet on the nuclei dataset
